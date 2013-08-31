@@ -25,7 +25,7 @@ defrecord SalesData, id: nil, ship_to: nil, net_amount: nil, total_amount: nil
 defmodule Formatter do
   def output_sales_data(sales_data) do
     Enum.each sales_data, fn(record) ->
-      output_sales_record(record)
+      record |> output_sales_record
     end
   end
 
@@ -38,14 +38,14 @@ defmodule Parse do
 
   def parse_csv(file_name) do
     File.open! file_name, fn(pid) ->
-      IO.read(pid, :line)
-      convert_to_orders(pid)
+      pid |> IO.read(:line)
+      pid |> convert_to_orders
     end
   end
 
   def convert_to_orders(pid) do
     Enum.map IO.stream(pid, :line), fn(line) ->
-      parse_line(line)
+      line |> parse_line
     end
   end
 
@@ -58,9 +58,9 @@ defmodule Parse do
   end 
 
   def convert_to_order([id, ship_to, net_amount]) do
-    ship_to = convert_ship_to(ship_to)
-    id = binary_to_integer(id)
-    net_amount = binary_to_float(net_amount)
+    ship_to = ship_to |> convert_ship_to
+    id = id |> binary_to_integer
+    net_amount = net_amount |> binary_to_float
     SalesData[id: id, ship_to: ship_to, net_amount: net_amount]
   end
 
