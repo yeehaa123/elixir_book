@@ -36,8 +36,11 @@ end
 
 defmodule Parse do
 
+  def ok!({:ok, data}), do: data
+  def ok!({:error, message}), do: raise "#{message}"
+
   def parse_csv(file_name) do
-    File.open! file_name, fn(pid) ->
+    ok! File.open file_name, fn(pid) ->
       pid |> IO.read(:line)
       pid |> convert_to_orders
     end
@@ -50,7 +53,6 @@ defmodule Parse do
   end
 
   def parse_line(line) do
-    # 123,:NC,100.00
     line
     |> String.strip
     |> String.split(",")
